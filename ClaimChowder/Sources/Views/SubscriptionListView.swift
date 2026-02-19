@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct SubscriptionListView: View {
     @EnvironmentObject var authManager: AuthManager
@@ -9,6 +10,7 @@ struct SubscriptionListView: View {
     @State private var searchText = ""
     @State private var selectedTag: String? = nil
     @State private var showingImport = false
+    @State private var showingError = false
 
     private let availableTags = ["All", "Personal", "Business"]
 
@@ -94,6 +96,14 @@ struct SubscriptionListView: View {
             .task {
                 await viewModel.load()
             }
+            .alert("Error", isPresented: $showingError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(viewModel.errorMessage ?? "Something went wrong")
+            }
+            .onChange(of: viewModel.errorMessage) { _, newValue in
+                showingError = newValue != nil
+            }
         }
     }
 
@@ -176,11 +186,13 @@ struct SubscriptionListView: View {
                         SubscriptionRow(subscription: subscription)
                             .swipeActions(edge: .trailing) {
                                 Button(role: .destructive) {
+                                    UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                                     Task { await viewModel.delete(id: subscription.id) }
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
                                 Button {
+                                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
                                     Task { await viewModel.toggleCancelled(id: subscription.id, cancelled: true) }
                                 } label: {
                                     Label("Cancel", systemImage: "xmark.circle")
@@ -207,6 +219,7 @@ struct SubscriptionListView: View {
                             .opacity(0.6)
                             .swipeActions(edge: .trailing) {
                                 Button(role: .destructive) {
+                                    UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                                     Task { await viewModel.delete(id: subscription.id) }
                                 } label: {
                                     Label("Delete", systemImage: "trash")
@@ -214,6 +227,7 @@ struct SubscriptionListView: View {
                             }
                             .swipeActions(edge: .leading) {
                                 Button {
+                                    UINotificationFeedbackGenerator().notificationOccurred(.success)
                                     Task { await viewModel.toggleCancelled(id: subscription.id, cancelled: false) }
                                 } label: {
                                     Label("Reactivate", systemImage: "checkmark.circle")

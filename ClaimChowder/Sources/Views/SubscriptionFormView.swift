@@ -139,6 +139,7 @@ struct SubscriptionFormView: View {
             )
         }
 
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
         isSaving = false
         dismiss()
     }
