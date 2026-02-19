@@ -2,10 +2,45 @@ import SwiftUI
 
 struct SubscriptionListView: View {
     @EnvironmentObject var authManager: AuthManager
-    @StateObject private var viewModel = SubscriptionViewModel()
+    @ObservedObject var viewModel: SubscriptionViewModel
     @State private var showingAddForm = false
     @State private var editingSubscription: Subscription?
     @State private var showingProfile = false
+    @State private var searchText = ""
+    @State private var selectedTag: String? = nil
+    @State private var showingImport = false
+
+    private let availableTags = ["All", "Personal", "Business"]
+
+    private var filteredSubscriptions: [Subscription] {
+        var result = viewModel.subscriptions
+
+        // Filter by tag
+        if let tag = selectedTag, tag != "All" {
+            result = result.filter { $0.tags?.contains(tag) == true }
+        }
+
+        // Filter by search
+        if !searchText.isEmpty {
+            let query = searchText.lowercased()
+            result = result.filter {
+                $0.name.lowercased().contains(query) ||
+                $0.notes?.lowercased().contains(query) == true ||
+                $0.currency.rawValue.lowercased().contains(query) ||
+                $0.frequency.displayName.lowercased().contains(query)
+            }
+        }
+
+        return result
+    }
+
+    private var activeFiltered: [Subscription] {
+        filteredSubscriptions.filter { !$0.cancelled }
+    }
+
+    private var cancelledFiltered: [Subscription] {
+        filteredSubscriptions.filter { $0.cancelled }
+    }
 
     var body: some View {
         NavigationStack {
@@ -19,6 +54,7 @@ struct SubscriptionListView: View {
                 }
             }
             .navigationTitle("Subscriptions")
+            .searchable(text: $searchText, prompt: "Search subscriptions")
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -27,7 +63,12 @@ struct SubscriptionListView: View {
                         Image(systemName: "person.circle")
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItemGroup(placement: .topBarTrailing) {
+                    Button {
+                        showingImport = true
+                    } label: {
+                        Image(systemName: "doc.text")
+                    }
                     Button {
                         showingAddForm = true
                     } label: {
@@ -43,6 +84,9 @@ struct SubscriptionListView: View {
             }
             .sheet(isPresented: $showingProfile) {
                 ProfileView()
+            }
+            .sheet(isPresented: $showingImport) {
+                PDFImportView(viewModel: viewModel)
             }
             .refreshable {
                 await viewModel.load()
@@ -68,6 +112,38 @@ struct SubscriptionListView: View {
 
     private var subscriptionList: some View {
         List {
+            // Tag filter
+            Section {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(availableTags, id: \.self) { tag in
+                            Button {
+                                selectedTag = tag == "All" ? nil : tag
+                            } label: {
+                                Text(tag)
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 7)
+                                    .background(
+                                        (selectedTag == nil && tag == "All") || selectedTag == tag
+                                            ? Color.blue
+                                            : Color.blue.opacity(0.1)
+                                    )
+                                    .foregroundStyle(
+                                        (selectedTag == nil && tag == "All") || selectedTag == tag
+                                            ? .white
+                                            : .blue
+                                    )
+                                    .clipShape(Capsule())
+                            }
+                        }
+                    }
+                    .padding(.vertical, 4)
+                }
+            }
+            .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
+
             // Summary card
             Section {
                 HStack {
@@ -94,9 +170,9 @@ struct SubscriptionListView: View {
             }
 
             // Active subscriptions
-            if !viewModel.activeSubscriptions.isEmpty {
-                Section("Active") {
-                    ForEach(viewModel.activeSubscriptions) { subscription in
+            if !activeFiltered.isEmpty {
+                Section("Active (\(activeFiltered.count))") {
+                    ForEach(activeFiltered) { subscription in
                         SubscriptionRow(subscription: subscription)
                             .swipeActions(edge: .trailing) {
                                 Button(role: .destructive) {
@@ -124,9 +200,9 @@ struct SubscriptionListView: View {
             }
 
             // Cancelled subscriptions
-            if !viewModel.cancelledSubscriptions.isEmpty {
-                Section("Cancelled") {
-                    ForEach(viewModel.cancelledSubscriptions) { subscription in
+            if !cancelledFiltered.isEmpty {
+                Section("Cancelled (\(cancelledFiltered.count))") {
+                    ForEach(cancelledFiltered) { subscription in
                         SubscriptionRow(subscription: subscription)
                             .opacity(0.6)
                             .swipeActions(edge: .trailing) {
@@ -156,7 +232,6 @@ struct SubscriptionRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // Category icon
             Circle()
                 .fill(subscription.cancelled ? .gray.opacity(0.2) : .blue.opacity(0.1))
                 .frame(width: 40, height: 40)
@@ -177,7 +252,7 @@ struct SubscriptionRow: View {
                         .foregroundStyle(.secondary)
 
                     if let days = subscription.daysUntilNextPayment, !subscription.cancelled {
-                        Text("•")
+                        Text("·")
                             .foregroundStyle(.secondary)
                         Text(days == 0 ? "Due today" : days == 1 ? "Due tomorrow" : "Due in \(days) days")
                             .font(.caption)
@@ -185,7 +260,6 @@ struct SubscriptionRow: View {
                     }
                 }
 
-                // Tags
                 if let tags = subscription.tags, !tags.isEmpty {
                     HStack(spacing: 4) {
                         ForEach(tags, id: \.self) { tag in
@@ -209,9 +283,4 @@ struct SubscriptionRow: View {
         }
         .padding(.vertical, 2)
     }
-}
-
-#Preview {
-    SubscriptionListView()
-        .environmentObject(AuthManager())
 }

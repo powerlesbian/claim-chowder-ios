@@ -40,6 +40,21 @@ enum CurrencyType: String, Codable, CaseIterable {
         case .USD: return "US$"
         }
     }
+
+    func convert(_ amount: Double, to target: CurrencyType) -> Double {
+        if self == target { return amount }
+        let rates: [CurrencyType: [CurrencyType: Double]] = [
+            .HKD: [.HKD: 1, .SGD: 0.17, .USD: 0.13],
+            .SGD: [.HKD: 5.88, .SGD: 1, .USD: 0.74],
+            .USD: [.HKD: 7.80, .SGD: 1.35, .USD: 1],
+        ]
+        return amount * (rates[self]?[target] ?? 1)
+    }
+
+    static func format(_ amount: Double, currency: CurrencyType) -> String {
+        let formatted = String(format: "%.2f", amount)
+        return "\(currency.symbol)\(formatted)"
+    }
 }
 
 struct Subscription: Codable, Identifiable {
