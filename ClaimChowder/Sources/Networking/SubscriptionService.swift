@@ -1,7 +1,7 @@
 import Foundation
 import Supabase
 
-class SubscriptionService {
+final class SubscriptionService: Sendable {
     static let shared = SubscriptionService()
     private init() {}
 

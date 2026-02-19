@@ -7,25 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		134887442F381BD600B0137F /* ClaimChowderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887402F381BD600B0137F /* ClaimChowderApp.swift */; };
-		134887452F381BD600B0137F /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887432F381BD600B0137F /* Item.swift */; };
-		134887462F381BD600B0137F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887412F381BD600B0137F /* ContentView.swift */; };
-		134887472F381BD600B0137F /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887422F381BD600B0137F /* HomeView.swift */; };
-		134887482F381BD600B0137F /* ClaimChowderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887402F381BD600B0137F /* ClaimChowderApp.swift */; };
-		134887492F381BD600B0137F /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887432F381BD600B0137F /* Item.swift */; };
-		1348874A2F381BD600B0137F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887412F381BD600B0137F /* ContentView.swift */; };
-		1348874B2F381BD600B0137F /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887422F381BD600B0137F /* HomeView.swift */; };
-		1348874C2F381BD600B0137F /* ClaimChowderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887402F381BD600B0137F /* ClaimChowderApp.swift */; };
-		1348874D2F381BD600B0137F /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887432F381BD600B0137F /* Item.swift */; };
-		1348874E2F381BD600B0137F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887412F381BD600B0137F /* ContentView.swift */; };
-		1348874F2F381BD600B0137F /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887422F381BD600B0137F /* HomeView.swift */; };
-		134887512F381D5600B0137F /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887502F381D3E00B0137F /* WebView.swift */; };
-		134887522F381D5600B0137F /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887502F381D3E00B0137F /* WebView.swift */; };
-		134887532F381D5600B0137F /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887502F381D3E00B0137F /* WebView.swift */; };
 		134887562F38223D00B0137F /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 134887552F38223D00B0137F /* Auth */; };
-		134887582F38234500B0137F /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887572F38234000B0137F /* SupabaseClient.swift */; };
-		134887592F38234500B0137F /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887572F38234000B0137F /* SupabaseClient.swift */; };
-		1348875A2F38234500B0137F /* SupabaseClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134887572F38234000B0137F /* SupabaseClient.swift */; };
 		1348875D2F38242E00B0137F /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = 1348875C2F38242E00B0137F /* Supabase */; };
 /* End PBXBuildFile section */
 
@@ -47,18 +29,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		134887402F381BD600B0137F /* ClaimChowderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClaimChowderApp.swift; sourceTree = "<group>"; };
-		134887412F381BD600B0137F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		134887422F381BD600B0137F /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		134887432F381BD600B0137F /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
-		134887502F381D3E00B0137F /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
-		134887572F38234000B0137F /* SupabaseClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseClient.swift; sourceTree = "<group>"; };
 		134FFF982F381799008DC1C6 /* ClaimChowder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClaimChowder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		134FFFA72F38179A008DC1C6 /* ClaimChowderTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClaimChowderTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		134FFFB12F38179A008DC1C6 /* ClaimChowderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClaimChowderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		CC00030002F390001000B0137 /* Sources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Sources;
+			sourceTree = "<group>";
+		};
 		134FFFAA2F38179A008DC1C6 /* ClaimChowderTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = ClaimChowderTests;
@@ -108,12 +89,7 @@
 		134FFF8F2F381799008DC1C6 = {
 			isa = PBXGroup;
 			children = (
-				134887572F38234000B0137F /* SupabaseClient.swift */,
-				134887502F381D3E00B0137F /* WebView.swift */,
-				134887402F381BD600B0137F /* ClaimChowderApp.swift */,
-				134887412F381BD600B0137F /* ContentView.swift */,
-				134887422F381BD600B0137F /* HomeView.swift */,
-				134887432F381BD600B0137F /* Item.swift */,
+				CC00030002F390001000B0137 /* Sources */,
 				134FFFAA2F38179A008DC1C6 /* ClaimChowderTests */,
 				134FFFB42F38179A008DC1C6 /* ClaimChowderUITests */,
 				1348875B2F38242E00B0137F /* Frameworks */,
@@ -145,6 +121,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				CC00030002F390001000B0137 /* Sources */,
 			);
 			name = ClaimChowder;
 			packageProductDependencies = (
@@ -278,12 +257,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				134887442F381BD600B0137F /* ClaimChowderApp.swift in Sources */,
-				134887532F381D5600B0137F /* WebView.swift in Sources */,
-				134887452F381BD600B0137F /* Item.swift in Sources */,
-				134887462F381BD600B0137F /* ContentView.swift in Sources */,
-				134887582F38234500B0137F /* SupabaseClient.swift in Sources */,
-				134887472F381BD600B0137F /* HomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,12 +264,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1348875A2F38234500B0137F /* SupabaseClient.swift in Sources */,
-				1348874C2F381BD600B0137F /* ClaimChowderApp.swift in Sources */,
-				1348874D2F381BD600B0137F /* Item.swift in Sources */,
-				1348874E2F381BD600B0137F /* ContentView.swift in Sources */,
-				134887512F381D5600B0137F /* WebView.swift in Sources */,
-				1348874F2F381BD600B0137F /* HomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -304,12 +271,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				134887482F381BD600B0137F /* ClaimChowderApp.swift in Sources */,
-				134887592F38234500B0137F /* SupabaseClient.swift in Sources */,
-				134887492F381BD600B0137F /* Item.swift in Sources */,
-				1348874A2F381BD600B0137F /* ContentView.swift in Sources */,
-				1348874B2F381BD600B0137F /* HomeView.swift in Sources */,
-				134887522F381D5600B0137F /* WebView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -382,7 +343,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -390,6 +351,7 @@
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -440,12 +402,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 6.0;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -474,12 +437,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.chnx.ClaimChowder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = minimal;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -508,11 +468,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.chnx.ClaimChowder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_STRICT_CONCURRENCY = minimal;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -525,15 +482,13 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4A6CRS3Q4T;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.chnx.ClaimChowderTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClaimChowder.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ClaimChowder";
 			};
@@ -547,15 +502,13 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 4A6CRS3Q4T;
 				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = app.chnx.ClaimChowderTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClaimChowder.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ClaimChowder";
 			};
@@ -572,10 +525,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.chnx.ClaimChowderUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = ClaimChowder;
 			};
@@ -592,10 +543,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = app.chnx.ClaimChowderUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = ClaimChowder;
 			};

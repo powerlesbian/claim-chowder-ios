@@ -23,23 +23,26 @@ struct MainTabView: View {
 
     var body: some View {
         TabView {
-            Tab("Dashboard", systemImage: "chart.bar.fill") {
-                NavigationStack {
-                    DashboardView(viewModel: viewModel, displayCurrency: $displayCurrency)
-                        .navigationTitle("Dashboard")
-                        .task { await viewModel.load() }
-                }
+            NavigationStack {
+                DashboardView(viewModel: viewModel, displayCurrency: $displayCurrency)
+                    .navigationTitle("Dashboard")
+                    .task { await viewModel.load() }
+            }
+            .tabItem {
+                Label("Dashboard", systemImage: "chart.bar.fill")
             }
 
-            Tab("Subscriptions", systemImage: "list.bullet") {
-                SubscriptionListView(viewModel: viewModel)
-            }
-
-            Tab("Upcoming", systemImage: "calendar") {
-                NavigationStack {
-                    UpcomingPaymentsView(viewModel: viewModel)
-                        .navigationTitle("Upcoming Payments")
+            SubscriptionListView(viewModel: viewModel)
+                .tabItem {
+                    Label("Subscriptions", systemImage: "list.bullet")
                 }
+
+            NavigationStack {
+                UpcomingPaymentsView(viewModel: viewModel)
+                    .navigationTitle("Upcoming Payments")
+            }
+            .tabItem {
+                Label("Upcoming", systemImage: "calendar")
             }
         }
     }
