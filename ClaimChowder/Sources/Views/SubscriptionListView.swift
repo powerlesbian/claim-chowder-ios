@@ -1,6 +1,13 @@
 import SwiftUI
 import UIKit
 
+enum SortOption: String, CaseIterable {
+    case nameAZ = "Name (A–Z)"
+    case amountHigh = "Amount (High–Low)"
+    case dueSoon = "Due Soon"
+    case dateAdded = "Date Added (Newest)"
+}
+
 struct SubscriptionListView: View {
     @EnvironmentObject var authManager: AuthManager
     @ObservedObject var viewModel: SubscriptionViewModel
@@ -11,6 +18,12 @@ struct SubscriptionListView: View {
     @State private var selectedTag: String? = nil
     @State private var showingImport = false
     @State private var showingError = false
+    @State private var sortOrder: SortOption = .nameAZ
+    @State private var isSelecting = false
+    @State private var selectedIDs = Set<String>()
+    @State private var showingDeleteConfirm = false
+    @State private var showingExport = false
+    @State private var exportURL: URL?
 
     private let availableTags = ["All", "Personal", "Business"]
 
@@ -33,6 +46,25 @@ struct SubscriptionListView: View {
             }
         }
 
+        // Sort
+        result.sort { a, b in
+            switch sortOrder {
+            case .nameAZ:
+                return a.name.localizedCompare(b.name) == .orderedAscending
+            case .amountHigh:
+                return a.currency.convert(a.amount, to: .HKD) > b.currency.convert(b.amount, to: .HKD)
+            case .dueSoon:
+                switch (a.daysUntilNextPayment, b.daysUntilNextPayment) {
+                case (let x?, let y?): return x < y
+                case (nil, _?):        return false
+                case (_?, nil):        return true
+                case (nil, nil):       return false
+                }
+            case .dateAdded:
+                return a.createdAt > b.createdAt
+            }
+        }
+
         return result
     }
 
@@ -42,6 +74,46 @@ struct SubscriptionListView: View {
 
     private var cancelledFiltered: [Subscription] {
         filteredSubscriptions.filter { $0.cancelled }
+    }
+
+    private var selectionTotal: Double {
+        filteredSubscriptions
+            .filter { selectedIDs.contains($0.id) }
+            .reduce(0) { $0 + $1.currency.convert($1.amount, to: .HKD) }
+    }
+
+    private func buildCSV() -> URL? {
+        var lines = ["Name,Amount,Currency,Frequency,Start Date,Status,Tags,Notes,Created At"]
+        for sub in viewModel.subscriptions {
+            let fields = [
+                csvEscape(sub.name),
+                String(format: "%.2f", sub.amount),
+                sub.currency.rawValue,
+                sub.frequency.rawValue,
+                String(sub.startDate.prefix(10)),
+                sub.cancelled ? "Cancelled" : "Active",
+                csvEscape(sub.tags?.joined(separator: ";") ?? ""),
+                csvEscape(sub.notes ?? ""),
+                String(sub.createdAt.prefix(10))
+            ]
+            lines.append(fields.joined(separator: ","))
+        }
+        let csv = lines.joined(separator: "\n")
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("claim_chowder_export.csv")
+        do {
+            try csv.write(to: url, atomically: true, encoding: .utf8)
+            return url
+        } catch {
+            return nil
+        }
+    }
+
+    private func csvEscape(_ value: String) -> String {
+        guard value.contains(",") || value.contains("\"") || value.contains("\n") else {
+            return value
+        }
+        return "\"" + value.replacingOccurrences(of: "\"", with: "\"\"") + "\""
     }
 
     var body: some View {
@@ -58,23 +130,63 @@ struct SubscriptionListView: View {
             .navigationTitle("Subscriptions")
             .searchable(text: $searchText, prompt: "Search subscriptions")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        showingProfile = true
-                    } label: {
-                        Image(systemName: "person.circle")
+                if isSelecting {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(selectedIDs.count == filteredSubscriptions.count ? "Deselect All" : "Select All") {
+                            if selectedIDs.count == filteredSubscriptions.count {
+                                selectedIDs.removeAll()
+                            } else {
+                                selectedIDs = Set(filteredSubscriptions.map { $0.id })
+                            }
+                        }
                     }
-                }
-                ToolbarItemGroup(placement: .topBarTrailing) {
-                    Button {
-                        showingImport = true
-                    } label: {
-                        Image(systemName: "doc.text")
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Done") {
+                            isSelecting = false
+                            selectedIDs.removeAll()
+                        }
                     }
-                    Button {
-                        showingAddForm = true
-                    } label: {
-                        Image(systemName: "plus")
+                } else {
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button {
+                            showingProfile = true
+                        } label: {
+                            Image(systemName: "person.circle")
+                        }
+                    }
+                    ToolbarItemGroup(placement: .topBarTrailing) {
+                        Button("Select") {
+                            isSelecting = true
+                        }
+                        Menu {
+                            Picker("Sort by", selection: $sortOrder) {
+                                ForEach(SortOption.allCases, id: \.self) { option in
+                                    Text(option.rawValue).tag(option)
+                                }
+                            }
+                        } label: {
+                            Image(systemName: "arrow.up.arrow.down")
+                        }
+                        Menu {
+                            Button {
+                                showingImport = true
+                            } label: {
+                                Label("Import PDF", systemImage: "doc.text")
+                            }
+                            Button {
+                                exportURL = buildCSV()
+                                showingExport = exportURL != nil
+                            } label: {
+                                Label("Export CSV", systemImage: "square.and.arrow.up")
+                            }
+                        } label: {
+                            Image(systemName: "doc.text")
+                        }
+                        Button {
+                            showingAddForm = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
                     }
                 }
             }
@@ -90,6 +202,11 @@ struct SubscriptionListView: View {
             .sheet(isPresented: $showingImport) {
                 PDFImportView(viewModel: viewModel)
             }
+            .sheet(isPresented: $showingExport) {
+                if let url = exportURL {
+                    ActivityView(url: url)
+                }
+            }
             .refreshable {
                 await viewModel.load()
             }
@@ -103,6 +220,20 @@ struct SubscriptionListView: View {
             }
             .onChange(of: viewModel.errorMessage) { _, newValue in
                 showingError = newValue != nil
+            }
+            .confirmationDialog(
+                "Delete \(selectedIDs.count) subscription\(selectedIDs.count == 1 ? "" : "s")?",
+                isPresented: $showingDeleteConfirm,
+                titleVisibility: .visible
+            ) {
+                Button("Delete", role: .destructive) {
+                    UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                    Task {
+                        await viewModel.deleteMany(ids: selectedIDs)
+                        isSelecting = false
+                        selectedIDs.removeAll()
+                    }
+                }
             }
         }
     }
@@ -121,7 +252,7 @@ struct SubscriptionListView: View {
     }
 
     private var subscriptionList: some View {
-        List {
+        List(selection: $selectedIDs) {
             // Tag filter
             Section {
                 ScrollView(.horizontal, showsIndicators: false) {
@@ -238,6 +369,32 @@ struct SubscriptionListView: View {
                 }
             }
         }
+        .environment(\.editMode, .constant(isSelecting ? .active : .inactive))
+        .safeAreaInset(edge: .bottom) {
+            if isSelecting && !selectedIDs.isEmpty {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("\(selectedIDs.count) selected")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Text("HK$\(String(format: "%.2f", selectionTotal))")
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                    }
+                    Spacer()
+                    Button(role: .destructive) {
+                        showingDeleteConfirm = true
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.red)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 12)
+                .background(.regularMaterial)
+            }
+        }
     }
 }
 
@@ -297,4 +454,14 @@ struct SubscriptionRow: View {
         }
         .padding(.vertical, 2)
     }
+}
+
+private struct ActivityView: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: [url], applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

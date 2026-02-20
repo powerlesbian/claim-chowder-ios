@@ -42,6 +42,14 @@ final class SubscriptionService: Sendable {
             .execute()
     }
 
+    func deleteManySubscriptions(ids: [String]) async throws {
+        try await supabase
+            .from("subscriptions")
+            .delete()
+            .in("id", value: ids)
+            .execute()
+    }
+
     func toggleCancelled(id: String, cancelled: Bool) async throws {
         let updates = SubscriptionUpdate(
             cancelled: cancelled,

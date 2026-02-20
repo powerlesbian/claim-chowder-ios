@@ -14,8 +14,19 @@ struct SubscriptionFormView: View {
     @State private var notes: String
     @State private var selectedTags: Set<String>
     @State private var isSaving = false
+    @State private var showingDuplicateWarning = false
+    @State private var bypassDuplicateCheck = false
 
     private let availableTags = ["Personal", "Business"]
+
+    private var duplicateMatch: Subscription? {
+        guard editing == nil else { return nil }
+        let trimmed = name.trimmingCharacters(in: .whitespaces).lowercased()
+        guard !trimmed.isEmpty else { return nil }
+        return viewModel.subscriptions.first {
+            $0.name.trimmingCharacters(in: .whitespaces).lowercased() == trimmed
+        }
+    }
 
     init(viewModel: SubscriptionViewModel, editing: Subscription? = nil) {
         self.viewModel = viewModel
@@ -68,6 +79,24 @@ struct SubscriptionFormView: View {
                     DatePicker("Start Date", selection: $startDate, displayedComponents: .date)
                 }
 
+                if let match = duplicateMatch {
+                    Section {
+                        HStack(spacing: 10) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundStyle(.orange)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Possible duplicate")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                                Text("\"\(match.name)\" already exists · \(match.formattedAmount) \(match.frequency.displayName)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+
                 Section("Tags") {
                     ForEach(availableTags, id: \.self) { tag in
                         Button {
@@ -97,6 +126,21 @@ struct SubscriptionFormView: View {
             }
             .navigationTitle(editing != nil ? "Edit Subscription" : "Add Subscription")
             .navigationBarTitleDisplayMode(.inline)
+            .confirmationDialog(
+                "Possible Duplicate",
+                isPresented: $showingDuplicateWarning,
+                titleVisibility: .visible
+            ) {
+                Button("Add Anyway") {
+                    bypassDuplicateCheck = true
+                    Task { await save() }
+                }
+                Button("Cancel", role: .cancel) { }
+            } message: {
+                if let match = duplicateMatch {
+                    Text("\"\(match.name)\" already exists (\(match.formattedAmount) \(match.frequency.displayName)). Add another anyway?")
+                }
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -114,6 +158,12 @@ struct SubscriptionFormView: View {
 
     private func save() async {
         guard let amountValue = Double(amount) else { return }
+
+        if duplicateMatch != nil && !bypassDuplicateCheck {
+            showingDuplicateWarning = true
+            return
+        }
+
         isSaving = true
 
         if let editing {

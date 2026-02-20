@@ -109,6 +109,15 @@ class SubscriptionViewModel: ObservableObject {
         }
     }
 
+    func deleteMany(ids: Set<String>) async {
+        do {
+            try await service.deleteManySubscriptions(ids: Array(ids))
+            subscriptions.removeAll { ids.contains($0.id) }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
     func toggleCancelled(id: String, cancelled: Bool) async {
         do {
             try await service.toggleCancelled(id: id, cancelled: cancelled)
