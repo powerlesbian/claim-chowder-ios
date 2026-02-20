@@ -16,8 +16,19 @@ struct SubscriptionFormView: View {
     @State private var isSaving = false
     @State private var showingDuplicateWarning = false
     @State private var bypassDuplicateCheck = false
+    @State private var newTagName = ""
+    @State private var localTags: [String] = []
 
-    private let availableTags = ["Personal", "Business"]
+    private var availableTags: [String] {
+        let fromSubscriptions = viewModel.subscriptions.compactMap { $0.tags }.flatMap { $0 }
+        return Array(Set(["Personal", "Business"] + fromSubscriptions + localTags)).sorted()
+    }
+
+    private var canAddTag: Bool {
+        let trimmed = newTagName.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return false }
+        return !availableTags.contains { $0.lowercased() == trimmed.lowercased() }
+    }
 
     private var duplicateMatch: Subscription? {
         guard editing == nil else { return nil }
@@ -117,6 +128,17 @@ struct SubscriptionFormView: View {
                             }
                         }
                     }
+
+                    HStack {
+                        TextField("New tag...", text: $newTagName)
+                            .textInputAutocapitalization(.words)
+                            .onSubmit { addNewTag() }
+                        Button(action: addNewTag) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundStyle(canAddTag ? .blue : .secondary)
+                        }
+                        .disabled(!canAddTag)
+                    }
                 }
 
                 Section("Notes") {
@@ -154,6 +176,14 @@ struct SubscriptionFormView: View {
                 }
             }
         }
+    }
+
+    private func addNewTag() {
+        let tag = newTagName.trimmingCharacters(in: .whitespaces)
+        guard !tag.isEmpty else { return }
+        localTags.append(tag)
+        selectedTags.insert(tag)
+        newTagName = ""
     }
 
     private func save() async {

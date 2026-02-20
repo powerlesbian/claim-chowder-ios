@@ -25,7 +25,11 @@ struct SubscriptionListView: View {
     @State private var showingExport = false
     @State private var exportURL: URL?
 
-    private let availableTags = ["All", "Personal", "Business"]
+    private var availableTags: [String] {
+        let used = viewModel.subscriptions.compactMap { $0.tags }.flatMap { $0 }
+        let sorted = Array(Set(used)).sorted()
+        return ["All"] + sorted
+    }
 
     private var filteredSubscriptions: [Subscription] {
         var result = viewModel.subscriptions
