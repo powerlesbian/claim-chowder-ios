@@ -32,23 +32,26 @@ enum CurrencyType: String, Codable, CaseIterable {
     case HKD
     case SGD
     case USD
+    case MYR
+    case GBP
+    case CNY
+    case EUR
 
     var symbol: String {
         switch self {
         case .HKD: return "HK$"
         case .SGD: return "S$"
         case .USD: return "US$"
+        case .MYR: return "RM"
+        case .GBP: return "£"
+        case .CNY: return "¥"
+        case .EUR: return "€"
         }
     }
 
+    @MainActor
     func convert(_ amount: Double, to target: CurrencyType) -> Double {
-        if self == target { return amount }
-        let rates: [CurrencyType: [CurrencyType: Double]] = [
-            .HKD: [.HKD: 1, .SGD: 0.17, .USD: 0.13],
-            .SGD: [.HKD: 5.88, .SGD: 1, .USD: 0.74],
-            .USD: [.HKD: 7.80, .SGD: 1.35, .USD: 1],
-        ]
-        return amount * (rates[self]?[target] ?? 1)
+        RateService.shared.convert(amount, from: self.rawValue, to: target.rawValue)
     }
 
     static func format(_ amount: Double, currency: CurrencyType) -> String {

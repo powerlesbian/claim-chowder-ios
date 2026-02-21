@@ -318,8 +318,14 @@ struct SubscriptionListView: View {
             if !activeFiltered.isEmpty {
                 Section("Active (\(activeFiltered.count))") {
                     ForEach(activeFiltered) { subscription in
-                        SubscriptionRow(subscription: subscription)
-                            .swipeActions(edge: .trailing) {
+                        Button {
+                            guard !isSelecting else { return }
+                            editingSubscription = subscription
+                        } label: {
+                            SubscriptionRow(subscription: subscription)
+                        }
+                        .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing) {
                                 Button(role: .destructive) {
                                     UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
                                     Task { await viewModel.delete(id: subscription.id) }

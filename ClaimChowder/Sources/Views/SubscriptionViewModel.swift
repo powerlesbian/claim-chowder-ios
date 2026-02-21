@@ -21,7 +21,7 @@ class SubscriptionViewModel: ObservableObject {
     }
 
     var monthlyTotal: Double {
-        activeSubscriptions.reduce(0) { $0 + $1.monthlyAmount }
+        activeSubscriptions.reduce(0) { $0 + $1.currency.convert($1.monthlyAmount, to: .HKD) }
     }
 
     var formattedMonthlyTotal: String {

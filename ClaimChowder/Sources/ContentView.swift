@@ -26,6 +26,7 @@ struct MainTabView: View {
             NavigationStack {
                 DashboardView(viewModel: viewModel, displayCurrency: $displayCurrency)
                     .navigationTitle("Dashboard")
+                    .navigationBarTitleDisplayMode(.inline)
                     .task { await viewModel.load() }
             }
             .tabItem {

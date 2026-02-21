@@ -8,6 +8,7 @@ struct ClaimChowderApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(authManager)
+                .task { await RateService.shared.fetch() }
         }
     }
 }
