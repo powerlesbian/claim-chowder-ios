@@ -244,14 +244,18 @@ struct SubscriptionListView: View {
 
     private var emptyState: some View {
         ContentUnavailableView {
-            Label("No Subscriptions", systemImage: "doc.text")
+            Label("No expenses yet", systemImage: "doc.text")
         } description: {
-            Text("Add your first subscription to get started")
+            Text("Add your first expense manually, or import a bank statement PDF to get started quickly.")
         } actions: {
-            Button("Add Subscription") {
+            Button("Add Expense") {
                 showingAddForm = true
             }
             .buttonStyle(.borderedProminent)
+            Button("Import PDF") {
+                showingImport = true
+            }
+            .buttonStyle(.bordered)
         }
     }
 

@@ -2,10 +2,13 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var authManager: AuthManager
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     var body: some View {
         Group {
-            if authManager.isLoading {
+            if !hasSeenOnboarding {
+                OnboardingView(hasSeenOnboarding: $hasSeenOnboarding)
+            } else if authManager.isLoading {
                 ProgressView("Loading...")
             } else if authManager.isAuthenticated {
                 MainTabView()
@@ -13,6 +16,7 @@ struct ContentView: View {
                 AuthView()
             }
         }
+        .animation(.easeInOut, value: hasSeenOnboarding)
         .animation(.easeInOut, value: authManager.isAuthenticated)
     }
 }
