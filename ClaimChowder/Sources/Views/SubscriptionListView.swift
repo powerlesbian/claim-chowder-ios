@@ -22,8 +22,7 @@ struct SubscriptionListView: View {
     @State private var isSelecting = false
     @State private var selectedIDs = Set<String>()
     @State private var showingDeleteConfirm = false
-    @State private var showingExport = false
-    @State private var exportURL: URL?
+    private var csvExportURL: URL? { buildCSV() }
 
     private var availableTags: [String] {
         let used = viewModel.subscriptions.compactMap { $0.tags }.flatMap { $0 }
@@ -177,11 +176,10 @@ struct SubscriptionListView: View {
                             } label: {
                                 Label("Import PDF", systemImage: "doc.text")
                             }
-                            Button {
-                                exportURL = buildCSV()
-                                showingExport = exportURL != nil
-                            } label: {
-                                Label("Export CSV", systemImage: "square.and.arrow.up")
+                            if let url = csvExportURL {
+                                ShareLink(item: url, preview: SharePreview("claim_chowder_export.csv", image: Image(systemName: "tablecells"))) {
+                                    Label("Export CSV", systemImage: "square.and.arrow.up")
+                                }
                             }
                         } label: {
                             Image(systemName: "doc.text")
@@ -205,11 +203,6 @@ struct SubscriptionListView: View {
             }
             .sheet(isPresented: $showingImport) {
                 PDFImportView(viewModel: viewModel)
-            }
-            .sheet(isPresented: $showingExport) {
-                if let url = exportURL {
-                    ActivityView(url: url)
-                }
             }
             .refreshable {
                 await viewModel.load()
@@ -470,12 +463,3 @@ struct SubscriptionRow: View {
     }
 }
 
-private struct ActivityView: UIViewControllerRepresentable {
-    let url: URL
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: [url], applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
-}
