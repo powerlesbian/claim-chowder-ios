@@ -174,7 +174,7 @@ struct SubscriptionListView: View {
                             Button {
                                 showingImport = true
                             } label: {
-                                Label("Import PDF", systemImage: "doc.text")
+                                Label("Import CSV", systemImage: "tablecells")
                             }
                             if let url = csvExportURL {
                                 ShareLink(item: url, preview: SharePreview("claim_chowder_export.csv", image: Image(systemName: "tablecells"))) {
@@ -202,7 +202,7 @@ struct SubscriptionListView: View {
                 ProfileView()
             }
             .sheet(isPresented: $showingImport) {
-                PDFImportView(viewModel: viewModel)
+                CSVImportView(viewModel: viewModel)
             }
             .refreshable {
                 await viewModel.load()
@@ -245,7 +245,7 @@ struct SubscriptionListView: View {
                 showingAddForm = true
             }
             .buttonStyle(.borderedProminent)
-            Button("Import PDF") {
+            Button("Import CSV") {
                 showingImport = true
             }
             .buttonStyle(.bordered)
