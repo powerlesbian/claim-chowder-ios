@@ -66,4 +66,9 @@ class AuthManager: ObservableObject {
         try await supabase.auth.signOut()
         session = nil
     }
+
+    func deleteAccount() async throws {
+        try await supabase.rpc("delete_user_account").execute()
+        session = nil
+    }
 }
